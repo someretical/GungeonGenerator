@@ -1,0 +1,7 @@
+generator_graphs/*
+
+.idea/*
+
+__pycache__/*
+
+venv/*

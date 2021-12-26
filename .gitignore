@@ -5,3 +5,5 @@ generator_graphs/*
 __pycache__/*
 
 venv/*
+
+output/*

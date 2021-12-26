@@ -8,6 +8,7 @@ import generator
 
 
 def main() -> None:
+    Path('output/').mkdir(exist_ok=True)
     Path('generator_graphs/').mkdir(exist_ok=True)
     generator_files = glob.glob('generator_graphs/*')
     for file in generator_files:

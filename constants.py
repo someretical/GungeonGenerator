@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from enum import Enum
+from enum import *
 from typing import *
 
 import networkx as nx
@@ -30,10 +30,13 @@ class Direction(Enum):
 
 
 class Symmetry(Enum):
-    All = 1
-    No = 2
-    EastWest = 3
-    NorthSouth = 4
+    AllRotations = 1
+    NoRotationOrMirror = 2
+    EastWestMirror = 3
+    NorthSouthMirror = 4
+    DiagonalMirror = 5
+    AllMirror = 6
+    AllRotationAndMirror = 7
 
 
 class Tile(Enum):
@@ -45,6 +48,7 @@ class Tile(Enum):
     Chest = 6
     Shrine = 7
     Exit = 8
+    SecretWall = 9
 
 
 class Graph(Enum):
@@ -58,32 +62,59 @@ class DungeonTemplate:
     graph: nx.DiGraph
 
 
-#                             root
-CompositeTuple = Tuple[Graph, int, nx.DiGraph]
+@dataclass
+class Composite:
+    graph_type: Graph
+    root: int
+    graph: nx.DiGraph
+
+
+@dataclass
+class Edge:
+    source: int
+    target: int
 
 
 @dataclass
 class CompositeContainer:
-    composites: List[CompositeTuple]
-    #                  y    x
-    edges: List[Tuple[int, int]]
+    composites: List[Composite]
+    edges: List[Edge]
 
 
-#                           y    x
-DoorTupleList = List[Tuple[int, int, Direction]]
+@dataclass
+class Door:
+    y: int
+    x: int
+    direction: Direction
+
+
+@dataclass
+class DetailedDoor:
+    y: int
+    x: int
+    direction: Direction
+    source: int
+    target: int
 
 
 @dataclass
 class RoomTemplate:
     id_: int
-    doors: DoorTupleList
+    doors: List[Door]
     data: np.ndarray
 
 
 RoomTemplateDict = Dict[Room, List[RoomTemplate]]
 
-#                           node             y    x
-AvailableDoors = List[Tuple[int, Direction, int, int]]
+#                     root
+AvailableDoors = Dict[int, List[Door]]
 
-#                          root
-AssembledComposite = Tuple[int, AvailableDoors, np.ndarray]
+#                root
+UsedDoors = Dict[int, List[DetailedDoor]]
+
+
+@dataclass
+class AssembledComposite:
+    root: int
+    available_doors: AvailableDoors
+    composite_array: np.ndarray
